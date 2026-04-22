@@ -30,12 +30,13 @@ mongoose.connect(process.env.DB).then(() => {
 app.use(cors({
     origin: "http://localhost:5173", // הכתובת של ה-Vite שלך
     credentials: true,               // מאפשר שליחת עוגיות ו-headers מיוחדים
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(cookieParser())
 app.use(express.json())
 app.use(logegr)
+app.use('/uploads', express.static('uploads'));
 app.use("/api/auth", auth)
 app.use("/api/habits", habit)
 app.use("/api/logs", log)

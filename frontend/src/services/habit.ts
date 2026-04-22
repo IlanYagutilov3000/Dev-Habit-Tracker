@@ -9,6 +9,8 @@ const api = axios.create({
 export const getHabits = () => api.get('/');
 // create new habits
 export const createHabit = (newHabit: Habit) => api.post('/', newHabit);
+// pdate isActive check
+export const updateIsActive = (id: string) => api.patch(`${id}/toggle`);
 // update habit
 export const updateHabit = (habit: Habit) => api.put(`/${habit._id}`, habit);
 //delete habit

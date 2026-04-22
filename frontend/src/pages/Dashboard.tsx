@@ -1,7 +1,7 @@
 import { useEffect, useState, type FunctionComponent } from "react";
 import { useAuth } from "../context/AuthContext";
 import type { Habit } from "../interfaces/Habit";
-import { deleteHabit, getHabits } from "../services/habit";
+import { deleteHabit, getHabits, updateIsActive } from "../services/habit";
 import HabitCard from "../components/dashboardLayout/HabitCard";
 import { logoutUSer } from "../services/authService";
 import { getLogs } from "../services/log";
@@ -30,10 +30,26 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
         try {
             await deleteHabit(habitId);
             setUserHabits(userHabits.filter(habit => habit._id !== habitId))
+            // toadt later
         } catch (error) {
             console.log(error);
+            // toadt later
         }
     };
+
+    const handleIsActive = async (habitId: string) => {
+        try {
+            await updateIsActive(habitId)
+            setUserHabits((prevHabits) =>
+                prevHabits.map((habit) => habit._id === habitId ? { ...habit, isActive: !habit.isActive } : habit)
+            );
+            // toadt later
+        } catch (error) {
+            console.log(error);
+            // toadt later
+        }
+    }
+
     useEffect(() => {
         getHabits().then((res) => {
             setUserHabits(res.data.habits)
@@ -60,11 +76,49 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
         <>
             <div className="dashboard" >
                 <div className="container">
-                    <h2>Welcome {auth?.user?.name}!</h2>
+                    <div className="dashboard--header">
+                        <div className="dashboard--header-content">
+                            <div><h2>Dashboard</h2></div>
+                            <div>Welcome back <span>{auth?.user?.name}</span>, Architect. ready for your daily goals.</div>
+                        </div>
+                    </div>
+
+                    <div className="dashboard--news">
+                        <div className="dashboard--news-left">
+                            <div className="dashboard--news-left-subtitle">
+                                WEEKLY MOMENTOM
+                            </div>
+                            <div className="dashboard--news-left-title">
+                                <h2>Current Streak: 14 Days</h2>
+                            </div>
+                            <div className="dashboard--news-left-description">
+                                You've reached a flow state. Your consistency in 'Daily LeetCode'<br /> is driving your architectural mastery forward.
+                            </div>
+                        </div>
+                        <div className="dashboard--news-right">
+                            <div className="dashboard--news-right-header" >
+                                <div className="dashboard--news-right-subtitle" >
+                                    REWARD STATUS
+                                </div>
+                                <div className="dashboard--news-right-title" >
+                                    <h3>Level 43 Awaits</h3>
+                                </div>
+                            </div>
+
+                            <div className="dashboard--news-right-footer" >
+                                <div className="progress dashboard--news-right-progress-bar " role="progressbar" aria-label="Warning example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style={{ height: "0.5rem" }} >
+                                    <div className="progress-bar" style={{ width: "75%", backgroundColor: "#8321a1" }}></div>
+                                </div>
+                                <div className="dashboard--news-right-description" >
+                                    1,240 XP until next mastery badge
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div className="dashboard--habits">
                         <ul className="dashboard--habits-list" >
-                            {userHabits.map(habit => <HabitCard key={habit._id} habit={habit} onDelete={handleDelete} refresh={refresh} />)}
+                            {userHabits.map(habit => <HabitCard key={habit._id} habit={habit} onDelete={handleDelete} refresh={refresh} onActive={handleIsActive} />)}
                         </ul>
                     </div>
 

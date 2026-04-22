@@ -8,7 +8,7 @@ interface StatsProps {
 
 }
 
-const Stats: FunctionComponent<StatsProps> = ({logs, currentStreak, longestStreak}) => {
+const Stats: FunctionComponent<StatsProps> = ({ logs, currentStreak, longestStreak }) => {
     return (
         <>
             <h2>{currentStreak}</h2>

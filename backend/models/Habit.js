@@ -11,6 +11,10 @@ const habitSchema = new mongoose.Schema({
         required: true,
         minlength: 2
     },
+    image: {
+        type: String,
+        default: ""
+    },
     color: {
         type: String,
         default: "#8EFFC1"
