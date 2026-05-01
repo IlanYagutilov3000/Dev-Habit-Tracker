@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             // add toastify later here
         } catch (err) {
             console.log(err)
+            throw err;
             // add toastify later here
         }
     }
@@ -40,11 +41,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const res = await loginUser(data)
             setUser(res.data.user)
             navigate('/')
-            console.log("works bitch!");
-
             // add toastify later here
         } catch (err) {
             console.log(err)
+            throw err;
             // add toastify later here
         }
     }

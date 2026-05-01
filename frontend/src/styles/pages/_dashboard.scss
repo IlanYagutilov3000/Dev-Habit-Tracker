@@ -1,4 +1,10 @@
 .dashboard {
+    /* padding: 2rem 2rem; */
+    &--container{
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
     &--news{
         display: grid;
         grid-template-columns: 3.15fr 1fr;
@@ -45,6 +51,12 @@
             }
         }
     }
+    &--heatmap{
+        background-color: #fff;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
     &--habits {
         &-tile{
             position: relative;
@@ -74,7 +86,7 @@
                 border-radius: 10px;
                 padding: 1rem;
                 background-color: #fff;
-                overflow: hidden;
+                /* overflow: hidden; */
             }
         }
         &-cta {

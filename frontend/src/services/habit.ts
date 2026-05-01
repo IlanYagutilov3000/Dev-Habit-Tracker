@@ -3,12 +3,23 @@ import type { Habit } from "../interfaces/Habit";
 
 const api = axios.create({
     baseURL: `${import.meta.env.VITE_API_URL}/api/habits`,
-    withCredentials: true  // ⚠️ important for cookies!
+    withCredentials: true 
 })
 // gte the users habits
 export const getHabits = () => api.get('/');
+// get all active habits
+export const getActiveHabits = () => api.get('/active')
 // create new habits
-export const createHabit = (newHabit: Habit) => api.post('/', newHabit);
+/* export const createHabit = (newHabit: Habit) => api.post('/', newHabit); */
+export const createHabit = (newHabit: any) => {
+    const formData = new FormData();
+    formData.append('name', newHabit.name);
+    formData.append('color', newHabit.color);
+    if (newHabit.image) {
+        formData.append('image', newHabit.image);
+    }
+    return api.post('/', formData);
+};
 // pdate isActive check
 export const updateIsActive = (id: string) => api.patch(`${id}/toggle`);
 // update habit

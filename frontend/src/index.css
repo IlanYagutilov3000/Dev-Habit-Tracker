@@ -8,9 +8,13 @@
 }
 
 html {
-    font-size: 10px;
+    font-size: 14px;
 }
 
-body{
+body {
     background-color: #F5F6F7;
+}
+
+main{
+    padding: 2rem 2rem;
 }

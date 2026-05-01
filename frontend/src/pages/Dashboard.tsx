@@ -8,6 +8,9 @@ import { getLogs } from "../services/log";
 import type { Log } from "../interfaces/Log";
 import Stats from "../components/dashboardLayout/Stats";
 import Heatmap from "../components/dashboardLayout/Heatmap";
+import { boolean } from "yup";
+import CreateHabitCard from "../components/dashboardLayout/CreateHabitCard";
+import CreateHabitModal from "../components/modals/createHabit/CreateHabitModal";
 
 interface DashboardProps {
 
@@ -22,7 +25,9 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
     const [longestStreak, setLongestStreak] = useState<number>(0);
     const [refreshFlag, setRefreshFlag] = useState<boolean>(false);
 
-    let refresh = () => {
+    const [openCraeteHabit, setOpenCreateHabit] = useState<boolean>(false);
+
+    const refresh = () => {
         setRefreshFlag(!refreshFlag)
     }
 
@@ -58,7 +63,7 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
             console.log(err);
             setLoading(false);
         });
-    }, []);
+    }, [refreshFlag]);
 
     useEffect(() => {
         getLogs().then((res) => {
@@ -75,64 +80,71 @@ const Dashboard: FunctionComponent<DashboardProps> = () => {
     return (
         <>
             <div className="dashboard" >
-                <div className="container">
-                    <div className="dashboard--header">
-                        <div className="dashboard--header-content">
-                            <div><h2>Dashboard</h2></div>
-                            <div>Welcome back <span>{auth?.user?.name}</span>, Architect. ready for your daily goals.</div>
-                        </div>
-                    </div>
+                <div className="container-fluid">
+                    <div className="dashboard--container">
 
-                    <div className="dashboard--news">
-                        <div className="dashboard--news-left">
-                            <div className="dashboard--news-left-subtitle">
-                                WEEKLY MOMENTOM
-                            </div>
-                            <div className="dashboard--news-left-title">
-                                <h2>Current Streak: 14 Days</h2>
-                            </div>
-                            <div className="dashboard--news-left-description">
-                                You've reached a flow state. Your consistency in 'Daily LeetCode'<br /> is driving your architectural mastery forward.
+                        <div className="dashboard--header">
+                            <div className="dashboard--header-content">
+                                <div><h2>Dashboard</h2></div>
+                                <div>Welcome back <span>{auth?.user?.name}</span>, Ready for your daily goals.</div>
                             </div>
                         </div>
-                        <div className="dashboard--news-right">
-                            <div className="dashboard--news-right-header" >
-                                <div className="dashboard--news-right-subtitle" >
-                                    REWARD STATUS
+
+                        <div className="dashboard--news">
+                            <div className="dashboard--news-left">
+                                <div className="dashboard--news-left-subtitle">
+                                    WEEKLY MOMENTOM
                                 </div>
-                                <div className="dashboard--news-right-title" >
-                                    <h3>Level 43 Awaits</h3>
+                                <div className="dashboard--news-left-title">
+                                    <h2>Current Streak: {currentStreak} Days</h2>
+                                </div>
+                                <div className="dashboard--news-left-description">
+                                    You've reached a flow state. Your consistency in 'Daily LeetCode'<br /> is driving your architectural mastery forward.
                                 </div>
                             </div>
-
-                            <div className="dashboard--news-right-footer" >
-                                <div className="progress dashboard--news-right-progress-bar " role="progressbar" aria-label="Warning example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style={{ height: "0.5rem" }} >
-                                    <div className="progress-bar" style={{ width: "75%", backgroundColor: "#8321a1" }}></div>
+                            <div className="dashboard--news-right">
+                                <div className="dashboard--news-right-header" >
+                                    <div className="dashboard--news-right-subtitle" >
+                                        REWARD STATUS
+                                    </div>
+                                    <div className="dashboard--news-right-title" >
+                                        <h3>Level 43 Awaits</h3>
+                                    </div>
                                 </div>
-                                <div className="dashboard--news-right-description" >
-                                    1,240 XP until next mastery badge
+
+                                <div className="dashboard--news-right-footer" >
+                                    <div className="progress dashboard--news-right-progress-bar " role="progressbar" aria-label="Warning example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style={{ height: "0.5rem" }} >
+                                        <div className="progress-bar" style={{ width: "75%", backgroundColor: "#8321a1" }}></div>
+                                    </div>
+                                    <div className="dashboard--news-right-description" >
+                                        1,240 XP until next mastery badge
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="dashboard--habits">
-                        <ul className="dashboard--habits-list" >
-                            {userHabits.map(habit => <HabitCard key={habit._id} habit={habit} onDelete={handleDelete} refresh={refresh} onActive={handleIsActive} />)}
-                        </ul>
-                    </div>
+                        <div className="dashboard--heatmap" >
+                            <Heatmap logs={userLog} />
+                        </div>
 
-                    <div className="dashboard--stats">
-                        <Stats logs={userLog} currentStreak={currentStreak} longestStreak={longestStreak} />
-                    </div>
+                        <div className="dashboard--habits">
 
-                    <div className="dashboard--heatmap" style={{ border: "1px solid #3d444d", padding: "1rem", backgroundColor: "#0104090d", width: "74rem" }} >
-                        <Heatmap logs={userLog} />
-                    </div>
+                            <ul className="dashboard--habits-list" >
+                                {userHabits.map(habit => <HabitCard key={habit._id} habit={habit} onDelete={handleDelete} refresh={refresh} onActive={handleIsActive} />)}
 
-                    <button onClick={() => auth?.logout()} >Logout</button>
+                                <CreateHabitCard onClick={() => setOpenCreateHabit(true)} />
+                            </ul>
+                        </div>
+
+                        <div className="dashboard--stats">
+                            <Stats logs={userLog} currentStreak={currentStreak} longestStreak={longestStreak} />
+                        </div>
+
+                    </div>
                 </div>
             </div>
+
+            <CreateHabitModal show={openCraeteHabit} onHide={() => setOpenCreateHabit(false)} refresh={refresh} />
 
         </>
     );

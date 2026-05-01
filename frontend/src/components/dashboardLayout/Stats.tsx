@@ -2,18 +2,16 @@ import type { FunctionComponent } from "react";
 import type { Log } from "../../interfaces/Log";
 
 interface StatsProps {
-    logs: Log[]
-    currentStreak: number
+    logs: Log[];
     longestStreak: number
 
 }
 
-const Stats: FunctionComponent<StatsProps> = ({ logs, currentStreak, longestStreak }) => {
+const Stats: FunctionComponent<StatsProps> = ({ logs, longestStreak }) => {
     return (
         <>
-            <h2>{currentStreak}</h2>
             <h2>{longestStreak}</h2>
-            <span><strong>{logs.length}</strong></span>
+            <span><strong>{logs.length}</strong></span>{/* total habits completed */}
         </>
     );
 }

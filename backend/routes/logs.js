@@ -13,7 +13,6 @@ router.post("/", verifyToken, async (req, res) => {
             userId: req.user._id,
             habitId: req.body.habitId,
             note: req.body.note,
-
         });
         await log.save()
         res.status(201).json({ message: "Log created", log })

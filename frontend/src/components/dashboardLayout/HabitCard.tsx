@@ -55,11 +55,12 @@ const HabitCard: FunctionComponent<HabitCardProps> = ({ habit, onDelete, refresh
                                 </button>
                             </li>
                             <li className="dashboard--habits-dropdown-item">
-                                <button className="dropdown-item"  onClick={() => onActive(habit._id!)} >
-                                    <div><i className="fa-solid fa-pencil"></i></div>
-                                    <div>Archive Habit</div>
+                                <button className="dropdown-item" onClick={() => onActive(habit._id!)} >
+                                    <div><i className="fa-solid fa-box-archive"></i></div>
+                                    <div>{habit.isActive ? "Archive Habit" : "Activate Habit"}</div>
                                 </button>
                             </li>
+                            <li><hr className="dropdown-divider" /></li>
                             <li className="dashboard--habits-dropdown-item" >
                                 <button className="dropdown-item text-danger " onClick={() => onDelete(habit._id!)}>
                                     <div><i className="fa-solid fa-trash-can "></i></div>
@@ -75,7 +76,7 @@ const HabitCard: FunctionComponent<HabitCardProps> = ({ habit, onDelete, refresh
                         </div>
                         <div className="dashboard--habits-content" >
                             <div><h3 style={{ color: habit.color, margin: "0" }} >{habit.name}</h3></div>
-                            <div className="dashboard--habits-status" style={{display: "flex", alignItems: "center", gap: "0.6rem"}} >
+                            <div className="dashboard--habits-status" style={{ display: "flex", alignItems: "center", gap: "0.6rem" }} >
                                 <div><span style={{ borderRadius: "50%", width: "0.6rem", height: "0.6rem", backgroundColor: habit.isActive ? habit.color : "#ccc", display: "inline-block" }} ></span></div>
                                 <div>{habit.isActive ? "ACTIVE" : "INACTIVE"}</div>
                             </div>

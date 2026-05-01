@@ -1,7 +1,7 @@
-import type { FunctionComponent } from "react";
+import { useState, type FunctionComponent } from "react";
 import { useAuth } from "../context/AuthContext";
 import * as yup from 'yup'
-import { useFormik, type FormikValues } from "formik";
+import { ErrorMessage, useFormik, type FormikValues } from "formik";
 import type { RegisterUser } from "../interfaces/User";
 import { Link } from "react-router-dom";
 
@@ -11,6 +11,8 @@ interface RegisterProps {
 
 const Register: FunctionComponent<RegisterProps> = () => {
     const auth = useAuth();
+    const [serverError, setServerError] = useState<string | null>(null);
+    const [isLocked, setIsLocked] = useState(false);
 
     const formik: FormikValues = useFormik<RegisterUser>({
         initialValues: {
@@ -23,11 +25,23 @@ const Register: FunctionComponent<RegisterProps> = () => {
             email: yup.string().required("Email or password are incorrect").email(),
             password: yup.string().required("Email or password are incorrect").min(8).matches(/^(?=.*[a-z])(?=.*[A-Z])(?=(.*\d){4})(?=.*[!@%$#^&*\-_+()]).{8,}$/, "Enter a combination of at least 8 letters, numbers, and punctuation marks.")
         }),
-        onSubmit: (values) => {
-            auth?.register(values);
+        onSubmit: async (values) => {
+            if (isLocked) return;
+            setServerError(null);
+            try {
+                await auth?.register(values);
+            } catch (error: any) {
+                const errorMessage = error.response?.data || "An unexpected error occurred.";
+
+                if (error.response && error.response.status === 429) {
+                    setServerError("Too many attempts. Try again later.");
+                    setIsLocked(true);
+                } else {
+                    setServerError(errorMessage);
+                }
+            }
         }
     })
-
 
     return (
         <>
@@ -59,6 +73,11 @@ const Register: FunctionComponent<RegisterProps> = () => {
                                 </div>
 
                                 <div className="login--form-container">
+                                    {serverError && (
+                                        <div className="alert alert-danger text-center fw-bold" style={{ fontSize: "0.8rem" }} >
+                                            {serverError}
+                                        </div>
+                                    )}
                                     <form action="" onSubmit={formik.handleSubmit} >
 
                                         <div className="d-flex flex-column login--input">
@@ -86,11 +105,11 @@ const Register: FunctionComponent<RegisterProps> = () => {
                                         </div>
 
                                         <div className="login--submit mb-2">
-                                            <button type="submit" className="btn w-100 fw-bold" disabled={!(formik.isValid && formik.dirty)} >Sign In</button>
+                                            <button type="submit" className="btn w-100 fw-bold" disabled={!formik.isValid || !formik.dirty || isLocked} >Sign In</button>
                                         </div>
 
                                         <div className="login--register text-center" >
-                                            <span>New to the craft? <Link to={'/register'}>Create Account</Link></span>
+                                            <span>Already have an account? <Link to={'/login'}>Login</Link></span>
                                         </div>
 
                                     </form>

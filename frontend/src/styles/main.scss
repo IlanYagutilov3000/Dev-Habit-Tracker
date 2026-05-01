@@ -1,3 +1,8 @@
+// components
 @import './components/login';
 @import './components/heatmap';
+@import './components/sidebar';
+// pages
 @import './pages/dashboard';
+// modals
+@import './modal/createHabit';

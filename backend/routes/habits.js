@@ -36,7 +36,6 @@ router.post("/", [verifyToken, upload.single('image')], async (req, res) => {
     }
 })
 
-
 // get habit that belongs to the user
 router.get("/", verifyToken, async (req, res) => {
     try {
@@ -45,6 +44,16 @@ router.get("/", verifyToken, async (req, res) => {
     } catch (error) {
         res.status(500).send(error)
     }
+})
+
+// get all active habits
+router.get("/active", verifyToken, async (req, res) => {
+    try {
+        const habits = await Habit.find({userId: req.user._id, isActive: true})
+        res.status(200).json({habits})
+    } catch (error) {
+        res.status(500).send(error)
+    }   
 })
 
 // mark habit as inactive

@@ -1,11 +1,9 @@
 import { useFormik, type FormikValues } from "formik";
-import type { FunctionComponent } from "react";
+import { useState, type FunctionComponent } from "react";
 import * as yup from 'yup'
 import type { UserLogin } from "../interfaces/User";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
-
-
 
 interface LoginProps {
 
@@ -13,6 +11,7 @@ interface LoginProps {
 
 const Login: FunctionComponent<LoginProps> = () => {
     const auth = useAuth()
+    const [serverError, setServerError] = useState<string | null>(null);
 
     const formik: FormikValues = useFormik<UserLogin>({
         initialValues: {
@@ -23,8 +22,17 @@ const Login: FunctionComponent<LoginProps> = () => {
             email: yup.string().required("Email or password are incorrect").email(),
             password: yup.string().required("Email or password are incorrect").min(8)
         }),
-        onSubmit: (values) => {
-            auth?.login(values);
+        onSubmit: async (values) => {
+            setServerError(null);
+            try {
+                await auth?.login(values);
+            } catch (error: any) {
+                if (error.response && error.response.status === 429) {
+                    setServerError("Too many attempts. Try again later.");
+                } else {
+                    setServerError(error);
+                }
+            }
         }
     });
 
@@ -59,6 +67,12 @@ const Login: FunctionComponent<LoginProps> = () => {
                                 </div>
 
                                 <div className="login--form-container">
+                                    {serverError && (
+                                        <div className="alert alert-danger text-center fw-bold" style={{ fontSize: "0.8rem" }} >
+                                            {serverError}
+                                        </div>
+                                    )}
+
                                     <form action="" onSubmit={formik.handleSubmit} >
 
                                         <div className="d-flex flex-column login--input">

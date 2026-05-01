@@ -12,7 +12,7 @@ const getColor = (count: number): string => {
     return '#216e39' */
     switch (true) {
         case (count === 0):
-            return '#151b23';
+            return '#F0F1F2';
         case (count === 1):
             return '#033a16';
         case (count <= 3):
@@ -36,8 +36,6 @@ const Heatmap: FunctionComponent<HeatmapProps> = ({ logs }) => {
         date.setDate(date.getDate() - i);
         days.push(date);
     }
-
-    console.log(logs);
 
     return (
         <>

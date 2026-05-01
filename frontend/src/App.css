@@ -1,0 +1,8 @@
+.app{
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+
+    .app--sidebar{
+        background-color: #EFF1F2;
+    }
+}
